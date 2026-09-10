@@ -14,16 +14,813 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string
+          customer_name: string
+          email: string | null
+          id: string
+          pet_name: string | null
+          pet_notes: string | null
+          pet_species: string | null
+          phone: string
+          service_id: string | null
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string
+          customer_name: string
+          email?: string | null
+          id?: string
+          pet_name?: string | null
+          pet_notes?: string | null
+          pet_species?: string | null
+          phone: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string
+          customer_name?: string
+          email?: string | null
+          id?: string
+          pet_name?: string | null
+          pet_notes?: string | null
+          pet_species?: string | null
+          phone?: string
+          service_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      articles: {
+        Row: {
+          author: string | null
+          body_ar: string | null
+          body_en: string | null
+          cover_url: string | null
+          created_at: string
+          excerpt_ar: string | null
+          excerpt_en: string | null
+          id: string
+          is_published: boolean
+          published_at: string
+          seo_description: string | null
+          seo_title: string | null
+          slug: string
+          tags: string[]
+          title_ar: string
+          title_en: string
+        }
+        Insert: {
+          author?: string | null
+          body_ar?: string | null
+          body_en?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          seo_description?: string | null
+          seo_title?: string | null
+          slug: string
+          tags?: string[]
+          title_ar: string
+          title_en: string
+        }
+        Update: {
+          author?: string | null
+          body_ar?: string | null
+          body_en?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          seo_description?: string | null
+          seo_title?: string | null
+          slug?: string
+          tags?: string[]
+          title_ar?: string
+          title_en?: string
+        }
+        Relationships: []
+      }
+      banners: {
+        Row: {
+          created_at: string
+          cta_label_ar: string | null
+          cta_label_en: string | null
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          link: string | null
+          mobile_image_url: string | null
+          sort_order: number
+          starts_at: string | null
+          subtitle_ar: string | null
+          subtitle_en: string | null
+          title_ar: string
+          title_en: string
+        }
+        Insert: {
+          created_at?: string
+          cta_label_ar?: string | null
+          cta_label_en?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          link?: string | null
+          mobile_image_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar: string
+          title_en: string
+        }
+        Update: {
+          created_at?: string
+          cta_label_ar?: string | null
+          cta_label_en?: string | null
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          link?: string | null
+          mobile_image_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string
+          title_en?: string
+        }
+        Relationships: []
+      }
+      categories: {
+        Row: {
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name_ar: string
+          name_en: string
+          pet_type: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_ar: string
+          name_en: string
+          pet_type?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_ar?: string
+          name_en?: string
+          pet_type?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          ends_at: string | null
+          free_shipping: boolean
+          id: string
+          is_active: boolean
+          min_order: number
+          starts_at: string | null
+          value: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          ends_at?: string | null
+          free_shipping?: boolean
+          id?: string
+          is_active?: boolean
+          min_order?: number
+          starts_at?: string | null
+          value?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          ends_at?: string | null
+          free_shipping?: boolean
+          id?: string
+          is_active?: boolean
+          min_order?: number
+          starts_at?: string | null
+          value?: number
+        }
+        Relationships: []
+      }
+      homepage_sections: {
+        Row: {
+          id: string
+          is_visible: boolean
+          key: string
+          sort_order: number
+          subtitle_ar: string | null
+          subtitle_en: string | null
+          title_ar: string | null
+          title_en: string | null
+        }
+        Insert: {
+          id?: string
+          is_visible?: boolean
+          key: string
+          sort_order?: number
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string | null
+          title_en?: string | null
+        }
+        Update: {
+          id?: string
+          is_visible?: boolean
+          key?: string
+          sort_order?: number
+          subtitle_ar?: string | null
+          subtitle_en?: string | null
+          title_ar?: string | null
+          title_en?: string | null
+        }
+        Relationships: []
+      }
+      order_items: {
+        Row: {
+          id: string
+          image_url: string | null
+          name_ar: string
+          name_en: string
+          order_id: string
+          product_id: string | null
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          id?: string
+          image_url?: string | null
+          name_ar: string
+          name_en: string
+          order_id: string
+          product_id?: string | null
+          quantity?: number
+          unit_price: number
+        }
+        Update: {
+          id?: string
+          image_url?: string | null
+          name_ar?: string
+          name_en?: string
+          order_id?: string
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string | null
+          area: string | null
+          city: string | null
+          coupon_code: string | null
+          created_at: string
+          customer_name: string
+          discount: number
+          email: string | null
+          id: string
+          notes: string | null
+          order_number: string
+          payment_method: string
+          payment_status: string
+          phone: string
+          shipping: number
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          area?: string | null
+          city?: string | null
+          coupon_code?: string | null
+          created_at?: string
+          customer_name: string
+          discount?: number
+          email?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string
+          payment_status?: string
+          phone: string
+          shipping?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          area?: string | null
+          city?: string | null
+          coupon_code?: string | null
+          created_at?: string
+          customer_name?: string
+          discount?: number
+          email?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string
+          payment_status?: string
+          phone?: string
+          shipping?: number
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      pets: {
+        Row: {
+          age: string | null
+          breed: string | null
+          created_at: string
+          gender: string | null
+          id: string
+          name: string
+          photo_url: string | null
+          species: string
+          user_id: string
+          weight: string | null
+        }
+        Insert: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name: string
+          photo_url?: string | null
+          species?: string
+          user_id: string
+          weight?: string | null
+        }
+        Update: {
+          age?: string | null
+          breed?: string | null
+          created_at?: string
+          gender?: string | null
+          id?: string
+          name?: string
+          photo_url?: string | null
+          species?: string
+          user_id?: string
+          weight?: string | null
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          benefits_ar: string | null
+          benefits_en: string | null
+          brand: string | null
+          category_id: string | null
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          discount_end: string | null
+          discount_start: string | null
+          id: string
+          images: string[]
+          ingredients_ar: string | null
+          ingredients_en: string | null
+          is_best_seller: boolean
+          is_featured: boolean
+          is_new: boolean
+          is_published: boolean
+          is_vet_pick: boolean
+          low_stock_threshold: number
+          name_ar: string
+          name_en: string
+          pet_type: string
+          price: number
+          rating: number
+          review_count: number
+          sale_price: number | null
+          seo_description: string | null
+          seo_title: string | null
+          size: string | null
+          sku: string | null
+          slug: string
+          specifications: Json
+          stock: number
+          updated_at: string
+          usage_ar: string | null
+          usage_en: string | null
+          weight: string | null
+        }
+        Insert: {
+          benefits_ar?: string | null
+          benefits_en?: string | null
+          brand?: string | null
+          category_id?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          discount_end?: string | null
+          discount_start?: string | null
+          id?: string
+          images?: string[]
+          ingredients_ar?: string | null
+          ingredients_en?: string | null
+          is_best_seller?: boolean
+          is_featured?: boolean
+          is_new?: boolean
+          is_published?: boolean
+          is_vet_pick?: boolean
+          low_stock_threshold?: number
+          name_ar: string
+          name_en: string
+          pet_type?: string
+          price?: number
+          rating?: number
+          review_count?: number
+          sale_price?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          size?: string | null
+          sku?: string | null
+          slug: string
+          specifications?: Json
+          stock?: number
+          updated_at?: string
+          usage_ar?: string | null
+          usage_en?: string | null
+          weight?: string | null
+        }
+        Update: {
+          benefits_ar?: string | null
+          benefits_en?: string | null
+          brand?: string | null
+          category_id?: string | null
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          discount_end?: string | null
+          discount_start?: string | null
+          id?: string
+          images?: string[]
+          ingredients_ar?: string | null
+          ingredients_en?: string | null
+          is_best_seller?: boolean
+          is_featured?: boolean
+          is_new?: boolean
+          is_published?: boolean
+          is_vet_pick?: boolean
+          low_stock_threshold?: number
+          name_ar?: string
+          name_en?: string
+          pet_type?: string
+          price?: number
+          rating?: number
+          review_count?: number
+          sale_price?: number | null
+          seo_description?: string | null
+          seo_title?: string | null
+          size?: string | null
+          sku?: string | null
+          slug?: string
+          specifications?: Json
+          stock?: number
+          updated_at?: string
+          usage_ar?: string | null
+          usage_en?: string | null
+          weight?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          address: string | null
+          city: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          customer_name: string
+          id: string
+          is_approved: boolean
+          product_id: string
+          rating: number
+          user_id: string | null
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          customer_name: string
+          id?: string
+          is_approved?: boolean
+          product_id: string
+          rating?: number
+          user_id?: string | null
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          customer_name?: string
+          id?: string
+          is_approved?: boolean
+          product_id?: string
+          rating?: number
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          duration_min: number | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name_ar: string
+          name_en: string
+          price: number | null
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          duration_min?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_ar: string
+          name_en: string
+          price?: number | null
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          duration_min?: number | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name_ar?: string
+          name_en?: string
+          price?: number | null
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      site_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          created_at: string
+          id: string
+          is_approved: boolean
+          name: string
+          rating: number
+          sort_order: number
+          text_ar: string | null
+          text_en: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          name: string
+          rating?: number
+          sort_order?: number
+          text_ar?: string | null
+          text_en?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          name?: string
+          rating?: number
+          sort_order?: number
+          text_ar?: string | null
+          text_en?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wishlist: {
+        Row: {
+          created_at: string
+          id: string
+          product_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          product_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          product_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "super_admin"
+        | "store_manager"
+        | "veterinarian"
+        | "content_manager"
+        | "order_manager"
+        | "customer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +947,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "super_admin",
+        "store_manager",
+        "veterinarian",
+        "content_manager",
+        "order_manager",
+        "customer",
+      ],
+    },
   },
 } as const
