@@ -76,6 +76,83 @@
   --shadow-lift: 0 30px 60px -30px oklch(0.42 0.105 163 / 0.55);
 }
 
+.dark {
+  --background: oklch(0.19 0.02 165);
+  --foreground: oklch(0.95 0.012 95);
+  --card: oklch(0.235 0.024 165);
+  --card-foreground: oklch(0.95 0.012 95);
+  --popover: oklch(0.235 0.024 165);
+  --popover-foreground: oklch(0.95 0.012 95);
+  --primary: oklch(0.72 0.13 165);
+  --primary-foreground: oklch(0.17 0.03 165);
+  --primary-soft: oklch(0.3 0.045 165);
+  --secondary: oklch(0.78 0.13 84);
+  --secondary-foreground: oklch(0.22 0.04 90);
+  --muted: oklch(0.27 0.022 165);
+  --muted-foreground: oklch(0.74 0.02 150);
+  --accent: oklch(0.78 0.13 84);
+  --accent-foreground: oklch(0.22 0.04 90);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(0.97 0.01 95);
+  --border: oklch(0.32 0.025 165);
+  --input: oklch(0.32 0.025 165);
+  --ring: oklch(0.72 0.13 165);
+  --sand: oklch(0.225 0.026 165);
+  --gradient-hero: radial-gradient(
+      120% 120% at 80% 0%,
+      oklch(0.3 0.05 165) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, oklch(0.19 0.02 165), oklch(0.22 0.024 165));
+  --gradient-brand: linear-gradient(135deg, oklch(0.6 0.12 165), oklch(0.72 0.13 165));
+  --shadow-soft: 0 18px 40px -22px oklch(0 0 0 / 0.7);
+  --shadow-lift: 0 30px 60px -30px oklch(0 0 0 / 0.8);
+}
+
+@keyframes aw-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes aw-wag {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+@keyframes aw-tilt {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-4deg); }
+  60% { transform: rotate(3deg); }
+}
+@keyframes aw-walk {
+  0% { transform: translateX(-10px) rotate(-2deg); }
+  50% { transform: translateX(10px) rotate(2deg); }
+  100% { transform: translateX(-10px) rotate(-2deg); }
+}
+
+@utility mascot-bob {
+  animation: aw-bob 4s ease-in-out infinite;
+}
+@utility mascot-wag {
+  animation: aw-wag 2.2s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@utility mascot-tilt {
+  animation: aw-tilt 5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@utility mascot-walk {
+  animation: aw-walk 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
