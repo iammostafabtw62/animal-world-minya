@@ -124,7 +124,7 @@ function Home() {
             </div>
           </div>
           <div className="relative">
-            <Mascot which="pair" which-key="pair" className="mx-auto w-full max-w-xl" animation="bob" loading="eager" />
+            <Mascot which="pair" className="mx-auto w-full max-w-xl" animation="bob" loading="eager" />
           </div>
         </div>
       </section>
