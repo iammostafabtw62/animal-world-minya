@@ -1,317 +1,358 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
+  CalendarCheck,
+  MapPin,
+  MessageCircle,
+  ShieldCheck,
   ShoppingCart,
   Stethoscope,
-  HeartPulse,
-  MapPin,
-  Phone,
-  MessageCircle,
-  Clock,
   Truck,
-  CalendarCheck,
-  ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 
-import logoMark from "@/assets/logo-mark.png";
-import mascotsPair from "@/assets/mascots-pair.png";
-import mascotDog from "@/assets/mascot-dog.png";
-import mascotCat from "@/assets/mascot-cat.png";
-import { brand, location, services, trustPoints } from "@/lib/site-content";
+import { Mascot } from "@/components/Mascot";
+import { ProductCard } from "@/components/ProductCard";
+import { SiteLayout } from "@/components/SiteLayout";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useI18n } from "@/lib/i18n";
+import { useSiteInfo } from "@/lib/site-info";
+import {
+  discountPercent,
+  useArticles,
+  useCategories,
+  useProducts,
+  useServices,
+  useTestimonials,
+} from "@/lib/store";
+import { Stars } from "@/components/ProductCard";
 
 export const Route = createFileRoute("/")({
-  component: Index,
+  component: Home,
   head: () => ({
     meta: [
-      { title: "عالم الحيوان | Animal World — رعاية بيطرية ومنتجات في المنيا" },
+      { title: "عالم الحيوان | Animal World — متجر ورعاية بيطرية في المنيا" },
       {
         name: "description",
         content:
-          "عالم الحيوان — عيادة بيطرية ومتجر مستلزمات حيوانات أليفة في المنيا، مصر. كل ما يحتاجه حيوانك الأليف في مكان واحد.",
+          "عالم الحيوان: متجر مستلزمات حيوانات أليفة وعيادة بيطرية في المنيا، مصر. طعام، ألعاب، أدوية، وحجز مواعيد بيطرية أونلاين.",
       },
       { property: "og:title", content: "عالم الحيوان | Animal World — المنيا، مصر" },
       {
         property: "og:description",
-        content: "رعاية بيطرية متخصصة ومنتجات مختارة بعناية لحيوانك الأليف في المنيا.",
+        content: "كل ما يحتاجه حيوانك الأليف في مكان واحد — منتجات ورعاية بيطرية في المنيا.",
       },
-      { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
   }),
 });
 
-const serviceIcons = {
-  products: ShoppingCart,
-  vet: Stethoscope,
-  wellness: HeartPulse,
-} as const;
-
-const trustIcons = [MapPin, Stethoscope, ShieldCheck, MessageCircle, Truck, CalendarCheck];
-
-function Logo() {
+function SectionHeader({ title, href }: { title: string; href?: "/shop" | "/blog" | "/services" }) {
+  const { t } = useI18n();
   return (
-    <a href="#top" className="flex items-center gap-3">
-      <img src={logoMark} alt="شعار عالم الحيوان" width={44} height={44} className="h-11 w-11" />
-      <span className="leading-tight">
-        <span className="block font-display text-lg font-black text-primary">عالم الحيوان</span>
-        <span className="block text-[11px] font-semibold tracking-[0.18em] text-muted-foreground">
-          ANIMAL WORLD
-        </span>
-      </span>
-    </a>
+    <div className="mb-6 flex items-end justify-between gap-4">
+      <h2 className="font-display text-2xl font-black md:text-3xl">{title}</h2>
+      {href ? (
+        <Link to={href} className="text-sm font-bold text-primary hover:underline">
+          {t("cta.viewAll")}
+        </Link>
+      ) : null}
+    </div>
   );
 }
 
-function Index() {
-  return (
-    <div id="top" dir="rtl" lang="ar" className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <Logo />
-          <nav className="hidden items-center gap-7 text-sm font-semibold text-muted-foreground md:flex">
-            <a href="#services" className="transition-colors hover:text-primary">
-              خدماتنا
-            </a>
-            <a href="#minya" className="transition-colors hover:text-primary">
-              عن عالم الحيوان
-            </a>
-            <a href="#contact" className="transition-colors hover:text-primary">
-              تواصل معنا
-            </a>
-          </nav>
-          <a
-            href="#contact"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-soft transition-transform hover:scale-[1.03]"
-          >
-            احجز موعدًا
-          </a>
-        </div>
-      </header>
+function Home() {
+  const { t, locale, L } = useI18n();
+  const { contact, shipping } = useSiteInfo();
+  const { data: products, isLoading } = useProducts();
+  const { data: categories } = useCategories();
+  const { data: services } = useServices();
+  const { data: articles } = useArticles();
+  const { data: testimonials } = useTestimonials();
 
+  const list = products ?? [];
+  const bestSellers = list.filter((p) => p.is_best_seller).slice(0, 8);
+  const offers = list.filter((p) => discountPercent(p) > 0).slice(0, 8);
+  const vetPicks = list.filter((p) => p.is_vet_pick).slice(0, 4);
+
+  const why = [
+    { Icon: MapPin, ar: "في قلب المنيا", en: "Right here in Minya" },
+    { Icon: Stethoscope, ar: "خبرة بيطرية", en: "Veterinary expertise" },
+    { Icon: ShieldCheck, ar: "منتجات أصلية", en: "Authentic products" },
+    { Icon: MessageCircle, ar: "دعم العملاء", en: "Customer support" },
+    { Icon: Truck, ar: "توصيل سريع", en: "Fast delivery" },
+    { Icon: CalendarCheck, ar: "حجز المواعيد", en: "Easy booking" },
+  ];
+
+  return (
+    <SiteLayout>
       {/* Hero */}
       <section className="surface-hero relative overflow-hidden">
         <div className="paw-dots absolute inset-0 opacity-70" aria-hidden />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:py-20">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:py-20">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card px-4 py-1.5 text-xs font-bold text-primary">
               <MapPin className="h-3.5 w-3.5" />
-              {location.cityAr} — {location.cityEn}
+              {locale === "ar" ? contact.address_ar : contact.address_en}
             </span>
-            <h1 className="mt-5 font-display text-4xl font-black leading-[1.25] text-foreground md:text-5xl">
-              {brand.taglineAr}
+            <h1 className="mt-5 font-display text-4xl font-black leading-[1.25] md:text-5xl">
+              {locale === "ar"
+                ? "كل ما يحتاجه حيوانك الأليف... في مكان واحد"
+                : "Everything Your Pet Needs, All in One Place."}
             </h1>
             <p className="mt-4 max-w-lg text-base leading-8 text-muted-foreground">
-              منتجات مختارة بعناية، رعاية بيطرية متخصصة، وكل ما يحتاجه حيوانك الأليف ليعيش حياة صحية
-              وسعيدة.
+              {locale === "ar"
+                ? "منتجات مختارة بعناية، رعاية بيطرية متخصصة، وكل ما يحتاجه حيوانك الأليف ليعيش حياة صحية وسعيدة."
+                : "Carefully selected products, expert veterinary care, and everything your pet needs for a healthy, happy life."}
             </p>
-            <p className="mt-2 text-sm font-semibold text-muted-foreground">{brand.taglineEn}</p>
-
             <div className="mt-8 flex flex-wrap gap-3">
-              <a
-                href="#services"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3.5 font-bold text-primary-foreground shadow-lift transition-transform hover:scale-[1.03]"
+              <Button asChild size="lg" className="rounded-full px-7 font-bold shadow-lift">
+                <Link to="/shop">
+                  <ShoppingCart className="h-5 w-5" />
+                  {t("cta.shop")}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="rounded-full border-2 px-7 font-bold"
               >
-                <ShoppingCart className="h-5 w-5" />
-                تسوق الآن
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border-2 border-primary/25 bg-card px-7 py-3.5 font-bold text-primary transition-colors hover:bg-primary-soft"
-              >
-                <Stethoscope className="h-5 w-5" />
-                احجز موعدًا
-              </a>
+                <Link to="/services">
+                  <Stethoscope className="h-5 w-5" />
+                  {t("cta.book")}
+                </Link>
+              </Button>
             </div>
           </div>
-
           <div className="relative">
-            <div className="absolute inset-x-6 bottom-6 h-24 rounded-[50%] bg-primary/10 blur-2xl" aria-hidden />
-            <img
-              src={mascotsPair}
-              alt="كلب وقطة عالم الحيوان — الكلب يحمل حقيبة تسوق والقطة ترتدي معطف الطبيب البيطري"
-              width={1200}
-              height={1008}
-              className="relative mx-auto w-full max-w-xl drop-shadow-xl"
-            />
-            <div className="relative -mt-4 flex justify-center gap-3 text-xs font-bold">
-              <span className="rounded-full bg-card px-4 py-2 text-primary shadow-soft">
-                🛍️ تسوق مع الكلب
+            <Mascot which="pair" className="mx-auto w-full max-w-xl" animation="bob" loading="eager" />
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="mx-auto max-w-7xl px-5 py-14">
+        <SectionHeader title={t("home.categories")} href="/shop" />
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {(categories ?? []).slice(0, 12).map((c) => (
+            <Link
+              key={c.id}
+              to="/shop"
+              search={{ category: c.slug }}
+              className="group rounded-3xl border border-border/70 bg-card p-4 text-center shadow-soft transition-transform hover:-translate-y-1"
+            >
+              <span className="grid h-16 w-full place-items-center overflow-hidden rounded-2xl bg-primary-soft text-3xl">
+                {c.image_url ? (
+                  <img
+                    src={c.image_url}
+                    alt={L(c, "name")}
+                    loading="lazy"
+                    className="h-16 w-full object-cover"
+                  />
+                ) : (
+                  "🐾"
+                )}
               </span>
-              <span className="rounded-full bg-card px-4 py-2 text-primary shadow-soft">
-                🩺 استشر القطة
+              <span className="mt-3 block text-sm font-bold group-hover:text-primary">
+                {L(c, "name")}
               </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Shop by pet */}
+      <section className="bg-sand py-14">
+        <div className="mx-auto max-w-7xl px-5">
+          <SectionHeader title={t("home.pets")} />
+          <div className="grid gap-5 md:grid-cols-2">
+            {(
+              [
+                { pet: "dog", label: t("pet.dog"), which: "dog" as const },
+                { pet: "cat", label: t("pet.cat"), which: "cat" as const },
+              ]
+            ).map((p) => (
+              <Link
+                key={p.pet}
+                to="/shop"
+                search={{ pet: p.pet }}
+                className="flex items-center gap-4 overflow-hidden rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition-transform hover:-translate-y-1"
+              >
+                <Mascot which={p.which} className="w-28" animation="wag" />
+                <div>
+                  <h3 className="font-display text-xl font-black">{p.label}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {locale === "ar" ? "طعام ومستلزمات وألعاب" : "Food, supplies and toys"}
+                  </p>
+                  <span className="mt-3 inline-block text-sm font-bold text-primary">
+                    {t("cta.shop")} →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Best sellers */}
+      <section className="mx-auto max-w-7xl px-5 py-14">
+        <SectionHeader title={t("home.bestSellers")} href="/shop" />
+        <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-80 rounded-3xl" />
+              ))
+            : bestSellers.map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
+      </section>
+
+      {/* Offers */}
+      {offers.length > 0 ? (
+        <section className="bg-sand py-14">
+          <div className="mx-auto max-w-7xl px-5">
+            <SectionHeader title={t("home.offers")} href="/shop" />
+            <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+              {offers.slice(0, 4).map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Vet picks + expertise */}
+      <section className="mx-auto max-w-7xl px-5 py-14">
+        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <div className="rounded-3xl bg-primary-soft p-8">
+            <Mascot which="cat" className="w-32" animation="tilt" />
+            <h2 className="mt-4 font-display text-2xl font-black">{t("home.expertise")}</h2>
+            <p className="mt-3 text-sm leading-7 text-muted-foreground">
+              {locale === "ar"
+                ? "فريقنا البيطري يختار المنتجات التي ينصح بها لصحة حيوانك الأليف، ويتابع حالته قبل وبعد العلاج."
+                : "Our veterinary team hand-picks the products they recommend and follows your pet before and after treatment."}
+            </p>
+            <Button asChild className="mt-5 rounded-full font-bold">
+              <Link to="/services">{t("cta.book")}</Link>
+            </Button>
+          </div>
+          <div>
+            <h2 className="mb-5 font-display text-2xl font-black">{t("home.vetPicks")}</h2>
+            <div className="grid gap-5 sm:grid-cols-2">
+              {vetPicks.map((p) => (
+                <ProductCard key={p.id} product={p} />
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Services */}
-      <section id="services" className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <div className="text-center">
-          <h2 className="font-display text-3xl font-black md:text-4xl">
-            رعاية متكاملة تحت سقف واحد
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            Veterinary Care • Pet Products • Pet Wellness
-          </p>
-        </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
-          {services.map((service) => {
-            const Icon = serviceIcons[service.id as keyof typeof serviceIcons];
-            return (
-              <article
-                key={service.id}
-                className="rounded-3xl border border-border/70 bg-card p-7 shadow-soft transition-transform hover:-translate-y-1"
+      <section className="bg-sand py-14">
+        <div className="mx-auto max-w-7xl px-5">
+          <SectionHeader title={t("home.services")} href="/services" />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {(services ?? []).slice(0, 4).map((s) => (
+              <Link
+                key={s.id}
+                to="/services"
+                className="rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition-transform hover:-translate-y-1"
               >
-                <span className="brand-gradient inline-flex h-13 w-13 items-center justify-center rounded-2xl p-3.5 text-primary-foreground">
-                  <Icon className="h-6 w-6" />
+                <span className="brand-gradient grid h-12 w-12 place-items-center rounded-2xl text-primary-foreground">
+                  <Stethoscope className="h-6 w-6" />
                 </span>
-                <h3 className="mt-5 font-display text-xl font-bold">{service.titleAr}</h3>
-                <p className="text-xs font-semibold tracking-wide text-accent-foreground/70">
-                  {service.titleEn}
+                <h3 className="mt-4 font-display text-lg font-bold">{L(s, "name")}</h3>
+                <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">
+                  {L(s, "description")}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">{service.descAr}</p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Minya trust */}
-      <section id="minya" className="bg-sand py-16 md:py-20">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 md:grid-cols-[1.1fr_0.9fr]">
-          <div>
-            <h2 className="font-display text-3xl font-black leading-snug md:text-4xl">
-              رعاية حقيقية لحيوانك الأليف في المنيا
-            </h2>
-            <p className="mt-4 max-w-xl leading-8 text-muted-foreground">
-              في عالم الحيوان، نجمع بين المنتجات التي يحتاجها حيوانك الأليف والرعاية البيطرية التي
-              تمنحك راحة البال.
-            </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {trustPoints.map((point, i) => {
-                const Icon = trustIcons[i] ?? Sparkles;
-                return (
-                  <div
-                    key={point.titleAr}
-                    className="flex gap-3 rounded-2xl border border-border/60 bg-card p-4"
-                  >
-                    <Icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                    <div>
-                      <h3 className="font-bold">{point.titleAr}</h3>
-                      <p className="mt-1 text-sm leading-6 text-muted-foreground">{point.descAr}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="relative flex items-end justify-center gap-2">
-            <img
-              src={mascotDog}
-              alt="كلب عالم الحيوان يلوّح بترحيب"
-              width={800}
-              height={912}
-              loading="lazy"
-              className="w-1/2 max-w-56 drop-shadow-lg"
-            />
-            <img
-              src={mascotCat}
-              alt="قطة عالم الحيوان بمعطف الطبيب البيطري"
-              width={800}
-              height={912}
-              loading="lazy"
-              className="w-1/2 max-w-56 drop-shadow-lg"
-            />
-            <span className="absolute -top-2 right-1/2 translate-x-1/2 rounded-full bg-card px-5 py-2 text-sm font-bold text-primary shadow-soft">
-              نعتني بكل حيوان أليف 🐾
-            </span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Contact & location */}
-      <section id="contact" className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <h2 className="font-display text-3xl font-black md:text-4xl">تواصل معنا وزُرنا</h2>
-        <p className="mt-3 text-muted-foreground">
-          عالم الحيوان — {location.cityAr} / {location.cityEn}
-        </p>
-
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div className="space-y-4">
-            <div className="flex gap-3 rounded-2xl border border-border/70 bg-card p-5">
-              <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" />
+      {/* Why us */}
+      <section className="mx-auto max-w-7xl px-5 py-14">
+        <SectionHeader title={t("home.why")} />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {why.map(({ Icon, ar, en }) => (
+            <div key={ar} className="flex gap-3 rounded-2xl border border-border/60 bg-card p-5">
+              <Icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
-                <h3 className="font-bold">العنوان</h3>
-                <p className="text-sm text-muted-foreground">{location.addressAr}</p>
+                <h3 className="font-bold">{locale === "ar" ? ar : en}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {locale === "ar" ? shipping.delivery_time_ar : shipping.delivery_time_en}
+                </p>
               </div>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <a
-                href={`tel:${location.phone.replace(/\s/g, "")}`}
-                className="flex gap-3 rounded-2xl border border-border/70 bg-card p-5 transition-colors hover:border-primary/40"
-              >
-                <Phone className="mt-1 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-bold">الهاتف</h3>
-                  <p dir="ltr" className="text-sm text-muted-foreground">
-                    {location.phone}
-                  </p>
-                </div>
-              </a>
-              <a
-                href={`https://wa.me/${location.whatsapp.replace(/\D/g, "")}`}
-                className="flex gap-3 rounded-2xl border border-border/70 bg-card p-5 transition-colors hover:border-primary/40"
-              >
-                <MessageCircle className="mt-1 h-5 w-5 shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-bold">واتساب</h3>
-                  <p dir="ltr" className="text-sm text-muted-foreground">
-                    {location.whatsapp}
-                  </p>
-                </div>
-              </a>
-            </div>
-            <div className="flex gap-3 rounded-2xl border border-border/70 bg-card p-5">
-              <Clock className="mt-1 h-5 w-5 shrink-0 text-primary" />
-              <div>
-                <h3 className="font-bold">مواعيد العمل</h3>
-                <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
-                  {location.hours.map((h) => (
-                    <li key={h.dayAr} className="flex justify-between gap-6">
-                      <span>{h.dayAr}</span>
-                      <span>{h.timeAr}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-3xl border border-border/70 shadow-soft">
-            <iframe
-              title="موقع عالم الحيوان على الخريطة — المنيا، مصر"
-              src={location.mapsUrl}
-              loading="lazy"
-              className="h-full min-h-80 w-full"
-            />
-          </div>
+          ))}
         </div>
       </section>
 
-      <footer className="border-t border-border/60 bg-card py-10">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center">
-          <Logo />
-          <p className="text-sm text-muted-foreground">
-            عالم الحيوان — مكان واحد لكل ما يحتاجه حيوانك الأليف. {location.cityAr}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Animal World — Veterinary Care • Pet Products • Pet
-            Wellness
-          </p>
+      {/* Testimonials */}
+      {(testimonials ?? []).length > 0 ? (
+        <section className="bg-sand py-14">
+          <div className="mx-auto max-w-7xl px-5">
+            <SectionHeader title={t("home.reviews")} />
+            <div className="grid gap-5 md:grid-cols-3">
+              {(testimonials ?? []).slice(0, 3).map((r) => (
+                <figure key={r.id} className="rounded-3xl border border-border/70 bg-card p-6">
+                  <Stars rating={r.rating} />
+                  <blockquote className="mt-3 text-sm leading-7 text-muted-foreground">
+                    {locale === "ar" ? r.text_ar : (r.text_en ?? r.text_ar)}
+                  </blockquote>
+                  <figcaption className="mt-4 font-bold">{r.name}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Articles */}
+      {(articles ?? []).length > 0 ? (
+        <section className="mx-auto max-w-7xl px-5 py-14">
+          <SectionHeader title={t("home.articles")} href="/blog" />
+          <div className="grid gap-5 md:grid-cols-3">
+            {(articles ?? []).slice(0, 3).map((a) => (
+              <Link
+                key={a.id}
+                to="/blog/$slug"
+                params={{ slug: a.slug }}
+                className="overflow-hidden rounded-3xl border border-border/70 bg-card shadow-soft transition-transform hover:-translate-y-1"
+              >
+                <div className="aspect-[16/9] bg-muted">
+                  {a.cover_url ? (
+                    <img
+                      src={a.cover_url}
+                      alt={L(a, "title")}
+                      loading="lazy"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                </div>
+                <div className="p-5">
+                  <h3 className="font-display font-bold">{L(a, "title")}</h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">
+                    {L(a, "excerpt")}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {/* Location */}
+      <section className="mx-auto max-w-7xl px-5 pb-14">
+        <SectionHeader title={t("home.location")} />
+        <div className="overflow-hidden rounded-3xl border border-border/70 shadow-soft">
+          <iframe
+            title={locale === "ar" ? "موقع عالم الحيوان" : "Animal World location"}
+            src={contact.maps_url}
+            loading="lazy"
+            className="h-80 w-full"
+          />
         </div>
-      </footer>
-    </div>
+      </section>
+    </SiteLayout>
   );
 }
